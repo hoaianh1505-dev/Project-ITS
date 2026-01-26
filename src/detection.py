@@ -1,12 +1,21 @@
 from ultralytics import YOLO
 import cv2
+import os
 
 class PriorityVehicleDetector:
-    def __init__(self, model_path='yolov8n.pt'):
+    def __init__(self, model_path=None):
         """
         Initialize the YOLOv8 model.
-        :param model_path: Path to the model weights. Defaults to 'yolov8n.pt' (automatically downloads).
+        Prioritizes 'best_model.pt' (custom trained) if available.
         """
+        if model_path is None:
+            if os.path.exists('best_model.pt'):
+                model_path = 'best_model.pt'
+                print("--- TÌM THẤY MODEL ĐÃ TRAIN: SỬ DỤNG 'best_model.pt' ---")
+            else:
+                model_path = 'yolov8n.pt'
+                print("--- KHÔNG THẤY MODEL CUSTOM: SỬ DỤNG 'yolov8n.pt' MẶC ĐỊNH ---")
+
         print(f"Loading model from {model_path}...")
         self.model = YOLO(model_path)
         

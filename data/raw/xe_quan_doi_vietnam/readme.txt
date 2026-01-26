@@ -1,0 +1,1 @@
+Hãy bỏ ảnh xe quan doi vietnam vào đây để tiến hành training.

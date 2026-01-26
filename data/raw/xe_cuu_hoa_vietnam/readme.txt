@@ -1,0 +1,1 @@
+Hãy bỏ ảnh xe cuu hoa vietnam vào đây để tiến hành training.
