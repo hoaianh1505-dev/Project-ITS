@@ -21,9 +21,11 @@ class PriorityVehicleDetector:
         """
         Detect objects in the frame and draw bounding boxes.
         :param frame: Input image/frame.
-        :return: Frame with annotations.
+        :return: Tuple (results_list, annotated_frame)
         """
         results = self.model(frame, verbose=False)
         annotated_frame = results[0].plot() # YOLOv8 built-in plotting
         
-        return annotated_frame
+        # Return the boxes for counting logic in main.py
+        # results[0].boxes contains cls, conf, xyxy
+        return results[0], annotated_frame
