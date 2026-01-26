@@ -6,10 +6,10 @@ import cv2
 # 0: Fire Truck, 1: Ambulance, 2: Police, 3: Army
 # (Adjust indices as per your preference, but consisteny is key)
 CLASS_MAPPING = {
-    "xe cuu hoa vietnam": 0,    # Fire Truck
-    "xe cuu thuong vietnam": 1, # Ambulance
-    "xe canh sat giao thong vietnam": 2, # Police
-    "xe quan doi vietnam": 3    # Army
+    "xe_cuu_hoa_vietnam": 0,    # Fire Truck
+    "xe_cuu_thuong_vietnam": 1, # Ambulance
+    "xe_canh_sat_giao_thong_vietnam": 2, # Police
+    "xe_quan_doi_vietnam": 3    # Army
 }
 
 # Standard YOLO COCO classes that represent "vehicles"
