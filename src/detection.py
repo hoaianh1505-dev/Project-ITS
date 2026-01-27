@@ -9,12 +9,12 @@ class PriorityVehicleDetector:
         Prioritizes 'best_model.pt' (custom trained) if available.
         """
         if model_path is None:
-            if os.path.exists('best_model.pt'):
-                model_path = 'best_model.pt'
-                print("--- TÌM THẤY MODEL ĐÃ TRAIN: SỬ DỤNG 'best_model.pt' ---")
+            if os.path.exists('models/best_model.pt'):
+                model_path = 'models/best_model.pt'
+                print("--- TÌM THẤY MODEL ĐÃ TRAIN: SỬ DỤNG 'models/best_model.pt' ---")
             else:
-                model_path = 'yolov8n.pt'
-                print("--- KHÔNG THẤY MODEL CUSTOM: SỬ DỤNG 'yolov8n.pt' MẶC ĐỊNH ---")
+                model_path = 'models/yolov8n.pt'
+                print("--- KHÔNG THẤY MODEL CUSTOM: SỬ DỤNG 'models/yolov8n.pt' MẶC ĐỊNH ---")
 
         print(f"Loading model from {model_path}...")
         self.model = YOLO(model_path)

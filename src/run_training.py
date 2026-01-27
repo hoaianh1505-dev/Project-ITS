@@ -34,10 +34,10 @@ def main():
             best_model_path = os.path.join(latest_run, "weights", "best.pt")
             
             if os.path.exists(best_model_path):
-                target_path = "best_model.pt"
+                target_path = "models/best_model.pt"
                 shutil.copy(best_model_path, target_path)
                 print(f"Đã copy model mới ra ngoài thành công: {target_path}")
-                print("Lần sau chạy App, hãy chỉnh code để dùng 'best_model.pt' nhé!")
+                print("Model đã sẵn sàng để sử dụng!")
             else:
                 print("Không tìm thấy file best.pt (Có thể quá trình train bị lỗi).")
         else:
