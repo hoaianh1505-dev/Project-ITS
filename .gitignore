@@ -27,6 +27,7 @@ MANIFEST
 venv/
 env/
 ENV/
+docs/
 env.bak/
 venv.bak/
 
@@ -65,3 +66,4 @@ Thumbs.db
 # Report Files (Do not upload)
 REPORT_*.txt
 REPORT_*.md
+TRAINING_GUIDE.md
