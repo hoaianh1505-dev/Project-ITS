@@ -3,6 +3,6 @@ names:
   1: xe canh sat giao thong vietnam
   2: xe cuu hoa vietnam
   3: xe quan doi vietnam
-path: C:\Users\wwwta\Project-ITS\data
+path: E:\ITS\ProjectITS\data
 train: train/images
 val: val/images
