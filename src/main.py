@@ -217,14 +217,14 @@ class TrafficApp:
         target_model = None
         
         if "Mặc Định" in selection:
-            target_model = 'yolov8n.pt'
+            target_model = 'models/yolov8n.pt'
             print("Chuyển sang Model Mặc Định")
         else:
-            if os.path.exists('best_model.pt'):
-                target_model = 'best_model.pt'
+            if os.path.exists('models/best_model.pt'):
+                target_model = 'models/best_model.pt'
                 print("Chuyển sang Model Custom")
             else:
-                messagebox.showerror("Lỗi", "Chưa tìm thấy file 'best_model.pt'.\nHãy chạy Train model trước!")
+                messagebox.showerror("Lỗi", "Chưa tìm thấy file 'models/best_model.pt'.\nHãy chạy Train model trước!")
                 self.cbo_model.current(0)
                 return
 
