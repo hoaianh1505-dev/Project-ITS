@@ -23,11 +23,11 @@ class TrafficApp:
         self.is_running = False
         self.cap = None
         self.counts = {
-            "Ambulance": 0,
-            "Fire Truck": 0,
-            "Police": 0,
-            "Army": 0,
-            "Civilian": 0
+            "Xe Cứu Thương": 0,
+            "Xe Cứu Hỏa": 0,
+            "Xe CSGT": 0,
+            "Xe Quân Đội": 0,
+            "Xe Dân Sự": 0
         }
 
         self.setup_ui()
@@ -86,11 +86,11 @@ class TrafficApp:
 
         self.stat_labels = {}
         vehicle_colors = {
-            "Fire Truck": "#e74c3c", # Red
-            "Ambulance": "#f1c40f",  # Yellow
-            "Police": "#3498db",     # Blue
-            "Army": "#2ecc71",       # Green
-            "Civilian": "#95a5a6"    # Grey
+            "Xe Cứu Hỏa": "#e74c3c", # Red
+            "Xe Cứu Thương": "#f1c40f",  # Yellow
+            "Xe CSGT": "#3498db",     # Blue
+            "Xe Quân Đội": "#2ecc71",       # Green
+            "Xe Dân Sự": "#95a5a6"    # Grey
         }
 
         for v_type, color in vehicle_colors.items():
@@ -176,25 +176,25 @@ class TrafficApp:
                 if is_custom_model:
                     # 0: Ambulance, 1: Police, 2: Fire Truck, 3: Army
                     if cls_id == 2:
-                        current_counts["Fire Truck"] += 1
+                        current_counts["Xe Cứu Hỏa"] += 1
                     elif cls_id == 0:
-                        current_counts["Ambulance"] += 1
+                        current_counts["Xe Cứu Thương"] += 1
                     elif cls_id == 1:
-                        current_counts["Police"] += 1
+                        current_counts["Xe CSGT"] += 1
                     elif cls_id == 3:
-                        current_counts["Army"] += 1
+                        current_counts["Xe Quân Đội"] += 1
                     else:
-                        current_counts["Civilian"] += 1
+                        current_counts["Xe Dân Sự"] += 1
                 else:
                     # FALLBACK
                     if cls_id == 7: 
-                        current_counts["Fire Truck"] += 1
+                        current_counts["Xe Cứu Hỏa"] += 1
                     elif cls_id == 5: 
-                        current_counts["Ambulance"] += 1
+                        current_counts["Xe Cứu Thương"] += 1
                     elif cls_id == 2: 
-                        current_counts["Civilian"] += 1
+                        current_counts["Xe Dân Sự"] += 1
                     elif cls_id == 3:
-                         current_counts["Civilian"] += 1
+                         current_counts["Xe Dân Sự"] += 1
                     else:
                         pass
         
