@@ -6,9 +6,9 @@ import cv2
 # 0: Fire Truck, 1: Ambulance, 2: Police, 3: Army
 # (Adjust indices as per your preference, but consisteny is key)
 CLASS_MAPPING = {
-    "xe_cuu_hoa_vietnam": 0,    # Fire Truck
-    "xe_cuu_thuong_vietnam": 1, # Ambulance
-    "xe_canh_sat_giao_thong_vietnam": 2, # Police
+    "xe_cuu_thuong_vietnam": 0, # Ambulance
+    "xe_canh_sat_giao_thong_vietnam": 1, # Police
+    "xe_cuu_hoa_vietnam": 2,    # Fire Truck
     "xe_quan_doi_vietnam": 3    # Army
 }
 

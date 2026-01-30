@@ -32,7 +32,9 @@ class PriorityVehicleDetector:
         :param frame: Input image/frame.
         :return: Tuple (results_list, annotated_frame)
         """
-        results = self.model(frame, verbose=False, conf=0.15) # Lower confidence to 0.15 for better detection with small data
+        # conf=0.25 is standard, but for demo we can lower it to catch more
+        # agnostic_nms=True helps avoid double boxes for same object (e.g. car inside truck box)
+        results = self.model(frame, verbose=False, conf=0.20, iou=0.5, agnostic_nms=True)
         annotated_frame = results[0].plot() # YOLOv8 built-in plotting
         
         # Return the boxes for counting logic in main.py
