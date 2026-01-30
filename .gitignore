@@ -69,6 +69,6 @@ REPORT_*.md
 TRAINING_GUIDE.md
 
 
-echo "hocbai/" >> .gitignore
+hocbai/
 
 
