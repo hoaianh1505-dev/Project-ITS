@@ -3,7 +3,7 @@ import os
 import cv2
 
 # Mapping folder names to Class IDs for our custom model
-# 0: Fire Truck, 1: Ambulance, 2: Police, 3: Army
+# 0: cuu thuong, 1: canh sat, 2: cuu hoa, 3: quan doi
 # (Adjust indices as per your preference, but consisteny is key)
 CLASS_MAPPING = {
     "xe_cuu_thuong_vietnam": 0, # Ambulance
