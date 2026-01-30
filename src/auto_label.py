@@ -11,7 +11,6 @@ CLASS_MAPPING = {
     "xe_cuu_hoa_vietnam": 2,    # Fire Truck
     "xe_quan_doi_vietnam": 3    # Army
 }
-
 # Standard YOLO COCO classes that represent "vehicles"
 # We will use these to find "where the car is", then relabel it.
 # 2: Car, 3: Motorcycle, 5: Bus, 7: Truck
