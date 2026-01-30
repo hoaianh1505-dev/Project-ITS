@@ -166,6 +166,10 @@ class TrafficApp:
     def update_dashboard(self, results, annotated_frame):
         current_counts = {k: 0 for k in self.counts}
         
+        # Initialize track history if not exists (Lazy init)
+        if not hasattr(self, 'track_history'):
+            self.track_history = {}
+
         names = results.names 
         is_custom_model = "xe cuu thuong vietnam" in str(names) or "xe_cuu_thuong_vietnam" in str(names) or len(names) < 10
 
@@ -173,27 +177,52 @@ class TrafficApp:
             for box in results.boxes:
                 cls_id = int(box.cls[0])
                 
+                # --- VOTING LOGIC START ---
+                # Check if we have a tracking ID (only available in Video mode)
+                track_id = int(box.id[0]) if box.id is not None else None
+                
+                final_cls_id = cls_id # Default to current frame if no tracking
+                
+                if track_id is not None:
+                    # Initialize history list for this vehicle ID
+                    if track_id not in self.track_history:
+                        self.track_history[track_id] = []
+                    
+                    # Add current class to history
+                    self.track_history[track_id].append(cls_id)
+                    
+                    # Keep only last 30 frames (approx 1-2 seconds)
+                    if len(self.track_history[track_id]) > 30:
+                        self.track_history[track_id].pop(0)
+                        
+                    # Vote: Find the most frequent class in history
+                    from collections import Counter
+                    most_common = Counter(self.track_history[track_id]).most_common(1)
+                    final_cls_id = most_common[0][0]
+                    # print(f"ID {track_id}: History={self.track_history[track_id]} -> Vote={final_cls_id}")
+                # --- VOTING LOGIC END ---
+
                 if is_custom_model:
                     # 0: Ambulance, 1: Police, 2: Fire Truck, 3: Army
-                    if cls_id == 2:
+                    if final_cls_id == 2:
                         current_counts["Xe Cứu Hỏa"] += 1
-                    elif cls_id == 0:
+                    elif final_cls_id == 0:
                         current_counts["Xe Cứu Thương"] += 1
-                    elif cls_id == 1:
+                    elif final_cls_id == 1:
                         current_counts["Xe CSGT"] += 1
-                    elif cls_id == 3:
+                    elif final_cls_id == 3:
                         current_counts["Xe Quân Đội"] += 1
                     else:
                         current_counts["Xe Dân Sự"] += 1
                 else:
                     # FALLBACK
-                    if cls_id == 7: 
+                    if final_cls_id == 7: 
                         current_counts["Xe Cứu Hỏa"] += 1
-                    elif cls_id == 5: 
+                    elif final_cls_id == 5: 
                         current_counts["Xe Cứu Thương"] += 1
-                    elif cls_id == 2: 
+                    elif final_cls_id == 2: 
                         current_counts["Xe Dân Sự"] += 1
-                    elif cls_id == 3:
+                    elif final_cls_id == 3:
                          current_counts["Xe Dân Sự"] += 1
                     else:
                         pass

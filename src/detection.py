@@ -34,7 +34,9 @@ class PriorityVehicleDetector:
         """
         # conf=0.25 is standard, but for demo we can lower it to catch more
         # agnostic_nms=True helps avoid double boxes for same object (e.g. car inside truck box)
-        results = self.model(frame, verbose=False, conf=0.20, iou=0.5, agnostic_nms=True)
+        # Use .track() instead of .predict() to keep IDs across frames
+        # persist=True is crucial for video
+        results = self.model.track(frame, verbose=False, conf=0.20, iou=0.5, agnostic_nms=True, persist=True)
         annotated_frame = results[0].plot() # YOLOv8 built-in plotting
         
         # Return the boxes for counting logic in main.py
