@@ -148,6 +148,10 @@ class TrafficApp:
             return
             
         self.is_running = True
+        self.detected_vehicles = {} # Reset unique vehicle store
+        if hasattr(self, 'track_history'):
+            self.track_history.clear()
+            
         self.process_loop()
 
     def process_loop(self):
@@ -164,7 +168,9 @@ class TrafficApp:
             self.video_label.config(text="Hết Video.")
 
     def update_dashboard(self, results, annotated_frame):
-        current_counts = {k: 0 for k in self.counts}
+        # Lazy init for image mode or first run
+        if not hasattr(self, 'detected_vehicles'):
+            self.detected_vehicles = {}
         
         # Initialize track history if not exists (Lazy init)
         if not hasattr(self, 'track_history'):
@@ -179,11 +185,11 @@ class TrafficApp:
                 
                 # --- VOTING LOGIC START ---
                 # Check if we have a tracking ID (only available in Video mode)
-                track_id = int(box.id[0]) if box.id is not None else None
+                track_id = int(box.id[0]) if box.id is not None else -1 # Use -1 for untracked objects
                 
                 final_cls_id = cls_id # Default to current frame if no tracking
                 
-                if track_id is not None:
+                if track_id != -1:
                     # Initialize history list for this vehicle ID
                     if track_id not in self.track_history:
                         self.track_history[track_id] = []
@@ -199,36 +205,77 @@ class TrafficApp:
                     from collections import Counter
                     most_common = Counter(self.track_history[track_id]).most_common(1)
                     final_cls_id = most_common[0][0]
-                    # print(f"ID {track_id}: History={self.track_history[track_id]} -> Vote={final_cls_id}")
                 # --- VOTING LOGIC END ---
 
+                # Determine Label
+                label_name = "Xe Dân Sự"
                 if is_custom_model:
-                    # 0: Ambulance, 1: Police, 2: Fire Truck, 3: Army
-                    if final_cls_id == 2:
-                        current_counts["Xe Cứu Hỏa"] += 1
-                    elif final_cls_id == 0:
-                        current_counts["Xe Cứu Thương"] += 1
-                    elif final_cls_id == 1:
-                        current_counts["Xe CSGT"] += 1
-                    elif final_cls_id == 3:
-                        current_counts["Xe Quân Đội"] += 1
-                    else:
-                        current_counts["Xe Dân Sự"] += 1
+                     # 0: Ambulance, 1: Police, 2: Fire Truck, 3: Army
+                    if final_cls_id == 2: label_name = "Xe Cứu Hỏa"
+                    elif final_cls_id == 0: label_name = "Xe Cứu Thương"
+                    elif final_cls_id == 1: label_name = "Xe CSGT"
+                    elif final_cls_id == 3: label_name = "Xe Quân Đội"
                 else:
                     # FALLBACK
-                    if final_cls_id == 7: 
-                        current_counts["Xe Cứu Hỏa"] += 1
-                    elif final_cls_id == 5: 
-                        current_counts["Xe Cứu Thương"] += 1
-                    elif final_cls_id == 2: 
-                        current_counts["Xe Dân Sự"] += 1
-                    elif final_cls_id == 3:
-                         current_counts["Xe Dân Sự"] += 1
-                    else:
-                        pass
+                    if final_cls_id == 7: label_name = "Xe Cứu Hỏa"
+                    elif final_cls_id == 5: label_name = "Xe Cứu Thương"
+                    elif final_cls_id == 2: label_name = "Xe Dân Sự"
+                    elif final_cls_id == 3: label_name = "Xe Dân Sự"
+
+                # DEBUG: Print what we found
+                # print(f"DEBUG: TrackID={track_id} -> {label_name}")
+
+                # Update Persistent Store
+                if track_id != -1:
+                    self.detected_vehicles[track_id] = label_name
+                else:
+                    # For image mode (no tracking ID), just increment a temp counter or similar?
+                    # Actually for image mode we likely want simple counting.
+                    # But since this function handles both, let's just cheat for Image mode:
+                    # Image mode usually runs once. We can generate a random ID or just count raw.
+                    # BETTER: For image mode, we don't have IDs. We should just display what's on screen.
+                    pass
+
+        # Calculate Totals
+        # Default with 0
+        final_counts = {
+            "Xe Cứu Thương": 0, "Xe Cứu Hỏa": 0, "Xe CSGT": 0, "Xe Quân Đội": 0, "Xe Dân Sự": 0
+        }
         
+        # Aggregate from unique tracked vehicles
+        if self.detected_vehicles:
+            for v_name in self.detected_vehicles.values():
+                if v_name in final_counts:
+                    final_counts[v_name] += 1
+        
+        # Verify: If we are in image mode (no tracking), self.detected_vehicles might be empty or consistent.
+        # If image mode, track_id is -1. We shouldn't use detected_vehicles for -1 blindly or we get only 1 car.
+        # FIX: If results.boxes has no IDs (Image mode), fallback to instant count.
+        has_tracking = results.boxes is not None and results.boxes and results.boxes[0].id is not None
+        
+        if not has_tracking and results.boxes:
+             # Image Mode / No Tracking Fallback
+             # Clear persistent storage to avoid mixing previous video data? 
+             # No, start_processing clears it.
+             # Just recount frame from scratch
+             final_counts = {k: 0 for k in final_counts} # Reset
+             for box in results.boxes:
+                 cls = int(box.cls[0])
+                 # Simplified mapping for fallback
+                 lbl = "Xe Dân Sự"
+                 if is_custom_model:
+                     if cls==2: lbl="Xe Cứu Hỏa"
+                     elif cls==0: lbl="Xe Cứu Thương"
+                     elif cls==1: lbl="Xe CSGT"
+                     elif cls==3: lbl="Xe Quân Đội"
+                 else:
+                     if cls==7: lbl="Xe Cứu Hỏa"
+                     elif cls==5: lbl="Xe Cứu Thương"
+                 
+                 if lbl in final_counts: final_counts[lbl] += 1
+
         # Update Stats UI
-        for k, v in current_counts.items():
+        for k, v in final_counts.items():
             self.stat_labels[k].config(text=str(v))
 
         # Convert to RGB for Tkinter
