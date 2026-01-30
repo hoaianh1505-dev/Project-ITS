@@ -1,1 +1,0 @@
-Hãy bỏ ảnh xe canh sat giao thong vietnam vào đây để tiến hành training

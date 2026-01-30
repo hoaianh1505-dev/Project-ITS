@@ -1,1 +1,0 @@
-Hãy bỏ ảnh xe cuu thuong vietnam vào đây để tiến hành training.
