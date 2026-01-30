@@ -43,7 +43,6 @@ pip-delete-this-directory.txt
 .idea/
 
 # YOLO / Ultralytics
-runs/
 # We keep the model files (.pt) if they are small, but you can ignore them if they get too big (>100MB)
 # *.pt
 
