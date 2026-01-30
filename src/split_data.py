@@ -7,6 +7,7 @@ import yaml
 RAW_DIR = 'data/raw'
 OUTPUT_DIR = 'data'
 TRAIN_RATIO = 0.8
+SEED = 42
 CLASSES = [
     "xe cuu thuong vietnam",
     "xe canh sat giao thong vietnam",
@@ -54,6 +55,8 @@ def process_data():
                 all_files.append((img_path, label_path))
     
     # Shuffle and Split
+    # Make shuffle reproducible
+    random.seed(SEED)
     random.shuffle(all_files)
     split_index = int(len(all_files) * TRAIN_RATIO)
     train_files = all_files[:split_index]
